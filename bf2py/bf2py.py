@@ -8,7 +8,7 @@ def main():
     else:
         chunks = parse.parse(tokens)
         finalCode = codegen.generateCode(toCompile, chunks)
-        if len(finalCode == 0):
+        if len(finalCode) == 0:
             print("Compile program is empty, invalid input?")
         else:
             codegen.writeFile(destFile, finalCode)
