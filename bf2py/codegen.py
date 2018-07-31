@@ -17,7 +17,7 @@ def writeFile(filename, finalCode):
 
 def generateCode(sourceFile, chunks):
     string = '#'
-    string += sourceFile + " compiled in to Python using Jamie Luckett's Compiler\n\n"
+    string += sourceFile + " compiled in to Python using bf2py github.com/jamieluckett/bf2py\n\n"
     string += SETUP
 
     for chunk in chunks:
