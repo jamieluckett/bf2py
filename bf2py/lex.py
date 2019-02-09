@@ -20,34 +20,34 @@ class LexicalAnalyser:
         self._set_current_char()
 
     def get_next_token(self):
-        while self.currentChar is not None:
-            if self.currentChar in ['>', '<', '+', '-']:
-                symbol = self.currentChar
-                quantity = self.get_number_of(self.currentChar)
+        while self.current_character is not None:
+            if self.current_character in ['>', '<', '+', '-']:
+                symbol = self.current_character
+                quantity = self.get_number_of(self.current_character)
                 return Token(quantity, CHAR_MAP[symbol])
             else:
                 # No token returned for an empty loop []
-                if self.currentChar == '[' and self._next_character() == ']':
+                if self.current_character == '[' and self._next_character() == ']':
                     self.advance(2)
                 else:
-                    token = Token(self.currentChar, CHAR_MAP[self.currentChar])
+                    token = Token(self.current_character, CHAR_MAP[self.current_character])
                     self.advance()
                     return token
 
-        return Token(self.currentChar, CHAR_MAP[self.currentChar])
+        return Token(self.current_character, CHAR_MAP[self.current_character])
 
     def get_number_of(self, symbol):
         count = 0
-        while self.currentChar == symbol:
+        while self.current_character == symbol:
             count += 1
             self.advance()
         return count
 
     def _set_current_char(self):
         try:
-            self.currentChar = self.source_code[self.position]
+            self.current_character = self.source_code[self.position]
         except IndexError:
-            self.currentChar = None
+            self.current_character = None
 
     def _next_character(self):
         return self.source_code[self.position + 1]

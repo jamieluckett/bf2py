@@ -16,7 +16,6 @@ def get_dest_file(source_file):
     filename = os.path.basename(source_file)
     directory = source_file.replace(filename, '')
     basename = os.path.splitext(filename)[0]
-    print(filename, source_file)
 
     return "{0}{1}.py".format(directory, basename)
 
