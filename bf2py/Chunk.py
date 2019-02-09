@@ -8,3 +8,6 @@ class Chunk:
 
     def add_tokens(self, tokens):
         self.tokens += tokens
+
+    def __str__(self):
+        return "Indent [{0}]".format(self.indent)
