@@ -1,25 +1,54 @@
-import sys, lex, parse, codegen
+import argparse
+import sys
+import os
+
+import lex
+import parse
+import codegen
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('source_file', help="brainfuck source code to compile")
+    parser.add_argument('dest_file', nargs='?',
+                        help="path of the output python file(default: input file appended with .py)")
+    parser.add_argument('-t', '--two', help="whether to output python 2 code or not", action='store_true')
+    parser.add_argument('-a', '--array-length', help="length of the brainfuck array (default=30000)", default=30000)
+
+    args = parser.parse_args()
+    if not args.dest_file:
+        args.dest_file = args.source_file + '.py'
+
+    return args
+
 
 def main():
-    file = open(toCompile, 'r') #open file read only
-    tokens = lex.getListOfTokens(file)
-    if parse.countLoops(tokens) == False:
+    args = get_args()
+    source_file = args.source_file
+    dest_file = args.dest_file
+    import_future = args.two
+    array_length = args.array_length
+
+    if not os.path.isfile(source_file):
+        print("Error: {0} is not a file".format(source_file))
+        sys.exit(1)
+
+    with open(source_file, 'r') as f:
+        tokens = lex.get_list_of_tokens(f)
+
+    if not parse.count_loops(tokens):
         return -1
     else:
         chunks = parse.parse(tokens)
-        finalCode = codegen.generateCode(toCompile, chunks)
-        if len(finalCode) == 0:
-            print("Compiled program is empty, invalid input?")
+        python_code = codegen.generate_code(source_file, chunks, import_future)
+        if not python_code:
+            print("Error: Compiled program is empty, invalid input?")
         else:
-            codegen.writeFile(destFile, finalCode)
+            codegen.write_file(dest_file, python_code)
+
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print("Usage: bf2py.py input.bf [output.py]")
-    else:
-        toCompile = sys.argv[1]
-        if len(sys.argv) == 3:
-            destFile = sys.argv[2]
-        else:
-            destFile = toCompile.split("/")[-1][:-3] + ".py"
+    try:
         main()
+    except Exception as e:
+        raise e
