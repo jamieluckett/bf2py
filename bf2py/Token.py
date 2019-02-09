@@ -1,4 +1,7 @@
-class Token():
-    def __init__(self, value, tokType): #using tokType instead of type because type() is a built in
+class Token:
+    def __init__(self, value, token_type):
         self.value = value
-        self.type = tokType
+        self.type = token_type
+
+    def __str__(self):
+        return "{0} | {1}".format(self.type, self.value)

@@ -1,84 +1,69 @@
-from Token import *
+from Token import Token
 
-MOVER, MOVEL, INCR, DECR, OUT, INP = "MOVER", "MOVEL", "INCR", "DECR", "OUT", "INP"
-LEFTBRAC, RIGHTBRAC, EOF = "LEFTBRAC", "RIGHTBRAC", "EOF"
+CHAR_MAP = {
+    '>': "MOVER",
+    '<': "MOVEL",
+    '+': "INCR",
+    '-': "DECR",
+    '.': "OUT",
+    ',': "INP",
+    '[': "LEFTBRAC",
+    ']': "RIGHTBRAC",
+    None: "EOF"
+}
 
-class LexicalAnalyser():
-    def __init__(self, file):
-        self.string = file.read()
-        self.string.replace("\n", "")
-        self.lines = self.string.split("\n") #split string into list of lines
-        self.lines = [i for i in self.lines if len(i) != 0] #strip blank lines
-        self.lineNo = 0
-        self.position = 0 #start at begining of file
-        self.currentChar = self.lines[self.lineNo][self.position]
 
-    def getNextToken(self):
-        while self.currentChar is not None:
-            if self.currentChar.isspace():
-                self.advance()
-            elif self.currentChar == '>':
-                temp = self.getNumberOf('>')
-                return Token(temp, MOVER)
+class LexicalAnalyser:
+    def __init__(self, source_code):
+        self.source_code = "".join([char for char in source_code if char in CHAR_MAP])
+        self.position = 0
+        self._set_current_char()
 
-            elif self.currentChar == '<':
-                temp = self.getNumberOf('<')
-                return Token(temp, MOVEL)
-
-            elif self.currentChar == '+':
-                temp = self.getNumberOf('+')
-                return Token(temp, INCR)
-
-            elif self.currentChar == '-':
-                temp = self.getNumberOf('-')
-                return Token(temp, DECR)
-
-            elif self.currentChar == '.':
-                self.advance()
-                return Token('.', OUT)
-
-            elif self.currentChar == ',':
-                self.advance()
-                return Token(',', INP)
-
-            elif self.currentChar == '[':
-                self.advance()
-                return Token('[', LEFTBRAC)
-
-            elif self.currentChar == ']':
-                self.advance()
-                return Token(']', RIGHTBRAC)
-
+    def get_next_token(self):
+        while self.current_character is not None:
+            if self.current_character in ['>', '<', '+', '-']:
+                symbol = self.current_character
+                quantity = self.get_number_of(self.current_character)
+                return Token(quantity, CHAR_MAP[symbol])
             else:
-                self.advance()
-                pass
+                # No token returned for an empty loop []
+                if self.current_character == '[' and self._next_character() == ']':
+                    self.advance(2)
+                else:
+                    token = Token(self.current_character, CHAR_MAP[self.current_character])
+                    self.advance()
+                    return token
 
-        return Token(None, EOF)
+        return Token(self.current_character, CHAR_MAP[self.current_character])
 
-    def getNumberOf(self, symbol):
+    def get_number_of(self, symbol):
         count = 0
-        while self.currentChar == symbol:
-            count+= 1
+        while self.current_character == symbol:
+            count += 1
             self.advance()
         return count
 
-    def advance(self):
-        self.position += 1
-        if len(self.lines[self.lineNo]) <= self.position:
-            self.lineNo += 1
-            self.position = 0
-        if len(self.lines) <= self.lineNo:
-            self.currentChar = None
-        else:
-            self.currentChar = self.lines[self.lineNo][self.position]
+    def _set_current_char(self):
+        try:
+            self.current_character = self.source_code[self.position]
+        except IndexError:
+            self.current_character = None
 
-def getListOfTokens(file):
-    analyser = LexicalAnalyser(file)
+    def _next_character(self):
+        return self.source_code[self.position + 1]
+
+    def advance(self, jumps=1):
+        self.position += jumps
+        self._set_current_char()
+
+
+def get_list_of_tokens(source_code):
+    analyser = LexicalAnalyser(source_code)
     tokens = []
     complete = False
     while not complete:
-        temp = analyser.getNextToken()
-        if temp.value == None:
+        temp = analyser.get_next_token()
+        if temp.value is None:
             complete = True
         else:
             tokens.append(temp)
