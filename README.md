@@ -12,6 +12,6 @@ bf2py.py input.bf [output.py]
 ### Arguments
 | Argument                               | Usage                                                                                                          |
 |----------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| `-t` or `--two`                        | Produces Python 2 executable code by way of importing print_function from __future__                           |
+| `-t` or `--two`                        | Produces Python 2 executable code by way of importing print_function from \_\_future\__                           |
 | `-a length`or`--array-length length` | The length of the memory array used by the Brainfuck program. Defaults to 30,000.                              |
 | `-d` or `--debug`                      | With this flag set, some debug information is printed along with any stack traces should the compiler blow up. |
