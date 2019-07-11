@@ -24,7 +24,7 @@ def get_args():
     parser = ArgumentParser()
     parser.add_argument('source_file', help="brainfuck source code to compile")
     parser.add_argument('dest_file', nargs='?',
-                        help="path of the output python file(default: input file appended with .py)")
+                        help="path of the output python file (default: input file appended with .py)")
     parser.add_argument('-t', '--two', help="whether to output python 2 code or not", action='store_true')
     parser.add_argument('-a', '--array-length', help="length of the brainfuck array (default=30000)", default=30000)
     parser.add_argument('-d', '--debug', help="whether or not to print debug information and stack traces",
